@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.example.cchat.dao.UserDao">
+
+    <resultMap id="userMap" type="com.example.cchat.entity.User">
+        <id column="id" property="id" jdbcType="INTEGER"/>
+        <result column="user_name" property="user_name" jdbcType="VARCHAR"/>
+        <result column="user_number" property="user_number" jdbcType="VARCHAR"/>
+        <result column="user_password" property="user_password" jdbcType="DATE"/>
+        <result column="user_phone" property="user_phone" jdbcType="VARCHAR"/>
+        <result column="user_type" property="user_type" jdbcType="VARCHAR"/>
+        <result column="user_img" property="user_img" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <select id="findAllUsers" resultMap="userMap" parameterType="com.example.cchat.entity.User">
+        select* from user
+        where user_type = 'common'
+    </select>
+
+    <!--统计总数据数-->
+    <select id="getTotal" resultType="java.lang.Long">
+    select count(*) from user
+    where user_type = 'common'
+    </select>
+
+    <select id="findByPage" resultMap="userMap" parameterType="com.example.cchat.entity.User">
+        select* from user
+        where user_type = 'common'
+        limit #{page},#{size}
+    </select>
+
+    <select id="findById" resultMap="userMap" parameterType="com.example.cchat.entity.User">
+        select* from user
+        <where>
+            id = #{id}
+        </where>
+    </select>
+
+    <select id="findByName" resultMap="userMap" parameterType="com.example.cchat.entity.User">
+        select* from user
+        <where>
+            user_name like "%"#{user_name}"%"
+            and user_type = 'common'
+        </where>
+    </select>
+
+    <delete id="deleteById" parameterType="com.example.cchat.entity.User">
+        delete from user
+        <where>
+            id = #{id}
+        </where>
+    </delete>
+
+
+    <insert id="insertUser" parameterType="com.example.cchat.entity.User">
+        insert into user
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="user.id != null">
+                id,
+            </if>
+            <if test="user.user_name != null">
+                user_name,
+            </if>
+            <if test="user.user_number != null">
+                user_number,
+            </if>
+            <if test="user.user_password != null">
+                user_password,
+            </if>
+            <if test="user.user_phone != null">
+                user_phone,
+            </if>
+            <if test="user.user_type != null">
+                user_type,
+            </if>
+            <if test="user.user_img != null">
+                user_img,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="user.id != null">
+                #{user.id},
+            </if>
+            <if test="user.user_name != null">
+                #{user.user_name},
+            </if>
+            <if test="user.user_number != null">
+                #{user.user_number},
+            </if>
+            <if test="user.user_password != null">
+                #{user.user_password},
+            </if>
+            <if test="user.user_phone != null">
+                #{user.user_phone},
+            </if>
+            <if test="user.user_type != null">
+                #{user.user_type},
+            </if>
+            <if test="user.user_img != null">
+                #{user.user_img},
+            </if>
+        </trim>
+    </insert>
+
+    <select id="getUserByUserNum" resultMap="userMap" parameterType="com.example.cchat.entity.User">
+        select * from user
+        <where>
+            user_number = #{user_number}
+        </where>
+    </select>
+
+    <update id="updateUserInfo" parameterType="com.example.cchat.entity.User">
+        update user
+        <trim prefix="set" suffixOverrides=",">
+            <if test="user.user_name != null">
+                user_name = #{user.user_name},
+            </if>
+            <if test="user.user_password">
+                user_password = #{user.user_password},
+            </if>
+            <if test="user.user_phone">
+                user_phone = #{user.user_phone},
+            </if>
+            <if test="user.user_type">
+                user_type = #{user.user_type},
+            </if>
+            <if test="user.user_img">
+                user_img = #{user.user_img},
+            </if>
+        </trim>
+        where user_number = #{user.user_number}
+    </update>
+
+</mapper>

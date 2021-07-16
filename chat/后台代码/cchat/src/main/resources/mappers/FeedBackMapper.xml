@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.example.cchat.dao.FeedBackDao">
+
+    <resultMap id="feedbackMap" type="com.example.cchat.entity.FeedBack">
+        <id column="id" property="id" jdbcType="INTEGER"/>
+        <result column="f_time" property="f_time"/>
+        <result column="user_id" property="user_id" jdbcType="INTEGER"/>
+        <result column="f_content" property="f_content" jdbcType="VARCHAR"/>
+        <result column="f_answer" property="f_answer" jdbcType="VARCHAR"/>
+        <association column="user" property="user" javaType="com.example.cchat.entity.User">
+            <id column="u_id" property="id"/>
+            <result column="user_name" property="user_name" />
+            <result column="user_number" property="user_number" />
+            <result column="user_password" property="user_password" />
+            <result column="user_phone" property="user_phone" />
+            <result column="user_type" property="user_type" />
+            <result column="user_img" property="user_img" />
+        </association>
+    </resultMap>
+
+    <select id="findAllFeedBack" resultMap="feedbackMap">
+       select *
+       from feedback f
+        left join user u
+        on f.user_id = u.id
+    </select>
+
+    <!--统计总数据数-->
+    <select id="getTotal" resultType="java.lang.Long">
+    select count(*) from feedback
+    </select>
+
+    <select id="findByPage" resultMap="feedbackMap" parameterType="com.example.cchat.entity.FeedBack">
+        select *
+        from feedback f
+        left join user u
+        on f.user_id = u.id
+        limit #{page},#{size}
+    </select>
+
+    <select id="findById" resultMap="feedbackMap" parameterType="com.example.cchat.entity.FeedBack">
+        select* from feedback
+        <where>
+            id = #{id}
+        </where>
+    </select>
+
+    <update id="altFeedBack" parameterType="com.example.cchat.entity.FeedBack">
+        update feedback
+        <set>
+            <if test="f_time != null">
+                f_time = #{f_time},
+            </if>
+            <if test="user_id != null">
+                user_id = #{user_id},
+            </if>
+            <if test="f_content != null">
+                f_content = #{f_content},
+            </if>
+            <if test="f_answer != null">
+                f_answer = #{f_answer},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+</mapper>

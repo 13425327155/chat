@@ -1,0 +1,28 @@
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/cchat?useUnicode=true&useSSL=false&characterEncoding=utf8&serverTimezone=Asia/Shanghai
+    username: root
+    password: "000617"
+  jpa:
+    show-sql: true
+    properties:
+      hibernate:
+        format_sq: true
+  application:
+    name: springboot-jwt
+
+mybatis:
+  mapper-locations: classpath:/mappers/*Mapper.xml
+  type-aliases-package: com.nan.house.dao
+
+server:
+  port: 8181
+config:
+  jwt:
+    # 加密密钥
+    secret: abcdefg1234567
+    # token有效时长
+    expire: 3600
+    # header 名称
+    header: token

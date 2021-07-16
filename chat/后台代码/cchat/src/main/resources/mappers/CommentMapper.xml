@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.example.cchat.dao.CommentDao">
+
+    <resultMap id="commentMap" type="com.example.cchat.entity.Comment">
+        <id column="id" property="id" jdbcType="INTEGER"/>
+        <result column="user_id" property="user_id" jdbcType="INTEGER"/>
+        <result column="c_content" property="c_content" jdbcType="VARCHAR"/>
+        <result column="c_time" property="c_time"/>
+        <result column="c_type" property="c_type" jdbcType="VARCHAR"/>
+        <result column="news_id" property="news_id" jdbcType="INTEGER"/>
+        <result column="parent_id" property="parent_id" jdbcType="INTEGER"/>
+        <result column="nickname" property="nickname" jdbcType="VARCHAR"/>
+        <result column="user_img" property="user_img"/>
+        <association column="user" property="user" javaType="com.example.cchat.entity.User">
+            <id column="u_id" property="id"/>
+            <result column="user_name" property="user_name" />
+            <result column="user_number" property="user_number" />
+            <result column="user_password" property="user_password" />
+            <result column="user_phone" property="user_phone" />
+            <result column="user_type" property="user_type" />
+            <result column="u_img" property="user_img" />
+        </association>
+        <association column="news" property="news" javaType="com.example.cchat.entity.News">
+            <id column="n_id" property="id"/>
+            <result column="n_content" property="n_content" />
+            <result column="n_time" property="n_time" />
+            <result column="n_title" property="n_title" />
+            <result column="n_views" property="n_views" />
+        </association>
+    </resultMap>
+
+<!--    用户-->
+    <!--添加评论-->
+    <insert id="saveComment" parameterType="com.example.cchat.entity.Comment">
+        insert into comment (user_id,c_content,c_time,c_type,news_id,parent_id,nickname,user_img)
+        values (#{user_id},#{c_content},#{c_time},#{c_type},#{news_id},#{parent_id},#{nickname},#{user_img});
+    </insert>
+
+    <!--查询父级评论-->
+    <select id="findByNewsIdParentIdNull" resultType="com.example.cchat.entity.Comment">
+        select c.*
+        from comment c
+        where c.news_id = #{newsId} and c.parent_id = #{newsParentId}
+        order by c.c_time desc
+        limit #{page},#{size}
+    </select>
+
+    <!--查询评论总数-->
+    <select id="UsergetTotal" resultType="com.example.cchat.entity.Comment">
+        select c.*
+        from comment c
+        where c.news_id = #{newsId} and c.parent_id = #{newsParentId}
+    </select>
+
+    <select id="findNewsById" resultType="com.example.cchat.entity.Comment">
+        select * from news where  id = #{id}
+    </select>
+
+    <!--查询一级子评论-->
+    <select id="findByNewsIdParentIdNotNull" resultType="com.example.cchat.entity.Comment">
+        select *
+        from comment c
+        where c.news_id = #{newsId} and c.parent_id = #{id}
+        order by c.c_time desc
+    </select>
+
+    <!--查询二级子评论-->
+    <select id="findByNewsIdAndReplayId" resultType="com.example.cchat.entity.Comment">
+        select *
+        from comment c
+        where c.news_id = #{newsId} and c.parent_id = #{childId}
+        order by c.c_time desc
+    </select>
+    <update id="updataComment">
+        update comment
+        set user_id=#{user_id},c_content=#{c_content},c_time=#{c_time},
+        c_type=#{c_type},news_id=#{news_id},parent_id=#{parent_id},
+        nickname=#{nickname},user_img=#{user_img}
+         where id = #{id}
+    </update>
+
+<!--    管理员-->
+    <select id="findStudy" resultMap="commentMap">
+       select c.*,
+       u.user_name,u.user_number,u.user_password,u.user_phone,u.user_type,u.user_img u_img,
+       n.*
+       from comment c
+        left join user u
+        on c.user_id = u.id
+        left join news n
+        on c.news_id = n.id
+    </select>
+
+    <!--统计总数据数-->
+    <select id="getTotal" resultType="java.lang.Long">
+    select count(*) from comment
+    </select>
+
+    <select id="findByPage" resultMap="commentMap" parameterType="com.example.cchat.entity.Comment">
+       select c.*,
+       u.user_name,u.user_number,u.user_password,u.user_phone,u.user_type,u.user_img u_img,
+       n.*
+       from comment c
+        left join user u
+        on c.user_id = u.id
+        left join news n
+        on c.news_id = n.id
+        limit #{page},#{size}
+    </select>
+
+    <select id="findById" resultMap="commentMap" parameterType="com.example.cchat.entity.Comment">
+        select* from comment
+        <where>
+            id = #{id}
+        </where>
+    </select>
+
+    <update id="deleteComment" parameterType="com.example.cchat.entity.Comment">
+        update comment
+        set c_content = '该评论存在违规，已被管理员删除!'
+        where id = #{id}
+    </update>
+
+</mapper>

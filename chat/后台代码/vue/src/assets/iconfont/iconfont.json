@@ -1,0 +1,16 @@
+{
+  "id": "2638584",
+  "name": "cchat",
+  "font_family": "iconfont",
+  "css_prefix_text": "icon-",
+  "description": "",
+  "glyphs": [
+    {
+      "icon_id": "14095265",
+      "name": "退出",
+      "font_class": "tuichu",
+      "unicode": "e780",
+      "unicode_decimal": 59264
+    }
+  ]
+}

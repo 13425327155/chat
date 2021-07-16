@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.example.cchat.dao.FeedBackDao" >
+    <resultMap id="FeedBack" type="com.example.cchat.entity.FeedBack" >
+        <id column="id" property="id" jdbcType="INTEGER" />
+        <result column="user_id" property="user_id" jdbcType="INTEGER" />
+        <result column="f_time" property="f_time" />
+        <result column="f_content" property="f_content" jdbcType="VARCHAR" />
+        <result column="f_answer" property="f_answer" jdbcType="VARCHAR" />
+    </resultMap>
+
+    <insert id="commitFeedBack" parameterType="com.example.cchat.dao.FeedBackDao">
+        insert into feedback
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="feedBack.id != null">
+                id,
+            </if>
+            <if test="feedBack.user_id != null">
+                user_id,
+            </if>
+            <if test="feedBack.f_time != null">
+                f_time,
+            </if>
+            <if test="feedBack.f_content != null">
+                f_content,
+            </if>
+            <if test="feedBack.f_answer != null">
+                f_answer,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="feedBack.id != null">
+                #{feedBack.id},
+            </if>
+            <if test="feedBack.user_id != null">
+                #{feedBack.user_id},
+            </if>
+            <if test="feedBack.f_time != null">
+                #{feedBack.f_time},
+            </if>
+            <if test="feedBack.f_content != null">
+                #{feedBack.f_content},
+            </if>
+            <if test="feedBack.f_answer != null">
+                #{feedBack.f_answer},
+            </if>
+        </trim>
+    </insert>
+
+
+</mapper>

@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.example.cchat.dao.NewsDao">
+
+    <resultMap id="newsMap" type="com.example.cchat.entity.News">
+        <id column="id" property="id" />
+        <result column="n_content" property="n_content"/>
+        <result column="n_time" property="n_time"/>
+        <result column="n_title" property="n_title" />
+        <result column="n_views" property="n_views" />
+    </resultMap>
+
+    <select id="findAllNews" resultMap="newsMap" parameterType="com.example.cchat.entity.News">
+        select* from news
+    </select>
+
+    <select id="findHotNew" resultMap="newsMap" parameterType="com.example.cchat.entity.News">
+        select * from news
+        order by news.n_views desc
+        limit 5
+    </select>
+
+    <!--统计总数据数-->
+    <select id="getTotal" resultType="java.lang.Long">
+    select count(*) from news
+    </select>
+
+    <select id="findByPage" resultMap="newsMap" parameterType="com.example.cchat.entity.News">
+        select* from news
+        order by news.n_time desc
+        limit #{page},#{size}
+    </select>
+
+    <select id="findById" resultMap="newsMap" parameterType="com.example.cchat.entity.News">
+        select* from news
+        <where>
+            id = #{id}
+        </where>
+    </select>
+
+    <select id="findByTitle" resultMap="newsMap" parameterType="com.example.cchat.entity.News">
+        select* from news
+        <where>
+            n_title like "%"#{n_title}"%"
+        </where>
+    </select>
+
+    <insert id="addNews" parameterType="com.example.cchat.entity.News">
+        insert into news (n_content,n_time,n_title,n_views)
+        values (#{n_content},#{n_time},#{n_title},#{n_views});
+    </insert>
+
+    <!--<insert id="addNews2" parameterType="com.example.cchat.entity.News">-->
+        <!--replace into news-->
+        <!--<trim prefix="(" suffix=")" suffixOverrides=",">-->
+            <!--<if test="id != null">id,</if>-->
+            <!--<if test="n_content != null">n_content,</if>-->
+            <!--<if test="n_time != null">n_time,</if>-->
+            <!--<if test="n_title != null">n_title,</if>-->
+            <!--<if test="n_views != null">n_views,</if>-->
+        <!--</trim>-->
+        <!--<trim prefix="values(" suffix=")" suffixOverrides=",">-->
+            <!--<if test="id != null">#{id},</if>-->
+            <!--<if test="n_content != null">#{n_content},</if>-->
+            <!--<if test="n_time != null">#{n_time},</if>-->
+            <!--<if test="n_title != null">#{n_title},</if>-->
+            <!--<if test="n_views != null">#{n_views},</if>-->
+
+        <!--</trim>-->
+        <!--<set >-->
+            <!--<if test="n_title != null">-->
+                <!--n_title = #{n_title},-->
+            <!--</if>-->
+            <!--<if test="n_time != null">-->
+                <!--n_time = #{n_time},-->
+            <!--</if>-->
+            <!--<if test="n_views != null">-->
+                <!--n_views = #{n_views},-->
+            <!--</if>-->
+        <!--</set>-->
+        <!--where id = #{id}-->
+    <!--</insert>-->
+
+    <delete id="deleteById" parameterType="com.example.cchat.entity.News">
+        delete from news
+        <where>
+            id = #{id}
+        </where>
+
+    </delete>
+
+    <update id="updataNews" parameterType="com.example.cchat.entity.News">
+        update news set n_content=#{n_content},n_time=#{n_time},
+        n_title=#{n_title},n_views=#{n_views}
+        where id = #{id}
+    </update>
+
+</mapper>
